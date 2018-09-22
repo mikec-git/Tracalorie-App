@@ -21,24 +21,46 @@ const ItemCtrl = (function(){
     };
 
     return {
+        getItems: function(){
+            return data.items;
+        },
         logData: function(){
             return data;
         }
     };
 })();
 
+
 // UI Controller
-const UICtrl = (function(){
-    
+const UICtrl = (function(){    
+
+    return {
+        populateItemList: function(items){
+            let html = '';
+            items.forEach(item => {
+                html += `
+                <li class="collection-item" id="item-${item.id}">
+                    <strong>${item.name}: </strong><em>${item.calories} Calories</em>
+                    <a href="#" class="secondary-content"><i class="edit-item fa fa-pencil-alt"></i></a>
+                </li>
+                `;
+            });
+            document.querySelector('#item-list').innerHTML = html;
+        }
+    };
 })();
 
-    // App Controller
-const App = (function(ItemCtrl, UICtrl){
-    
+
+// App Controller
+const App = (function(ItemCtrl, UICtrl){    
     
     return {
         init: function(){
-            console.log('Init');
+            console.log('Initializing app...');
+            const items = ItemCtrl.getItems();
+            UICtrl.populateItemList(items);
         }
     };
 })(ItemCtrl, UICtrl);
+
+App.init();

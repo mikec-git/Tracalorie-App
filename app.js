@@ -24,6 +24,11 @@ const ItemCtrl = (function(){
         getItems: function(){
             return data.items;
         },
+
+        addItem: function(name, calories){
+            console.log(name, calories);
+        },
+
         logData: function(){
             return data;
         }
@@ -32,7 +37,13 @@ const ItemCtrl = (function(){
 
 
 // UI Controller
-const UICtrl = (function(){    
+const UICtrl = (function(){
+    const UISelectors = {
+        itemList: '#item-list',
+        addBtn: '.add-btn',
+        itemNameInput: '#item-name',
+        itemCaloriesInput: '#item-calories'
+    };
 
     return {
         populateItemList: function(items){
@@ -45,22 +56,52 @@ const UICtrl = (function(){
                 </li>
                 `;
             });
-            document.querySelector('#item-list').innerHTML = html;
+            document.querySelector(UISelectors.itemList).innerHTML = html;
+        },
+        
+        getSelectors: function(){
+            return UISelectors;
+        },
+
+        getItemInput: function(){
+            return { 
+                itemNameInput: document.querySelector(UISelectors.itemNameInput).value,
+                itemCaloriesInput: document.querySelector(UISelectors.itemCaloriesInput).value
+            }
         }
     };
 })();
 
 
 // App Controller
-const App = (function(ItemCtrl, UICtrl){    
+const App = (function(ItemCtrl, UICtrl){
+    // Event listeners
+    const loadEventListeners = function(){
+        const UISelectors = UICtrl.getSelectors();
+
+        document.querySelector(UISelectors.addBtn).addEventListener('click', itemAddSubmit);
+    }
+
+    itemAddSubmit = function(e){
+        // Get form input from UI Controller
+        const {itemNameInput, itemCaloriesInput} = UICtrl.getItemInput();
+        
+        if(itemNameInput !== '' && itemCaloriesInput !== ''){
+            const newItem = ItemCtrl.addItem(itemNameInput, itemCaloriesInput);
+        }
+
+        e.preventDefault();
+    }
     
     return {
         init: function(){
             console.log('Initializing app...');
             const items = ItemCtrl.getItems();
             UICtrl.populateItemList(items);
+            loadEventListeners();
         }
     };
 })(ItemCtrl, UICtrl);
 
 App.init();
+

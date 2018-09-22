@@ -183,6 +183,11 @@ const UICtrl = (function(){
                     `;
                 }
             });
+        },
+
+        deleteListItem: function(id){
+            const itemId = `#item-${id}`;
+            document.querySelector(itemId).remove();
         }
     };
 })();
@@ -241,6 +246,7 @@ const App = (function(ItemCtrl, UICtrl){
 
         const updatedItem = ItemCtrl.updateItem(updateName, parseInt(updateCalories));
         UICtrl.updateListItem(updatedItem);
+        
         const totalCalories = ItemCtrl.getTotalCalories();
         UICtrl.showTotalCalories(totalCalories);
         UICtrl.clearEditState();
@@ -251,9 +257,13 @@ const App = (function(ItemCtrl, UICtrl){
     const itemDeleteSubmit = function(e){
         const currentItem = ItemCtrl.getCurrentItem();
 
-        // Delete from data structure
-        ItemCtrl.deleteItem(currentItem.id);
-        
+        ItemCtrl.deleteItem(currentItem.id);        
+        UICtrl.deleteListItem(currentItem.id);
+
+        const totalCalories = ItemCtrl.getTotalCalories();
+        UICtrl.showTotalCalories(totalCalories);
+        UICtrl.clearEditState();
+
         e.preventDefault();
     }
 

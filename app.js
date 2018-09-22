@@ -1,5 +1,10 @@
 // Storage Controller
 const StorageCtrl = (function(){
+    const getIndex = function(storedData, item){
+        const ids = storedData.map(item => item.id);
+        return ids.indexOf(item);
+    }
+
     return {
         storeItem: function(item){
             const storedData = this.getItems();
@@ -11,11 +16,10 @@ const StorageCtrl = (function(){
             return localStorage.getItem('itemList') ? JSON.parse(localStorage.getItem('itemList')) : [];
         },
 
-        removeItem: function(itemId){
+        deleteFromLocalStorage: function(itemId){
             const storedData = this.getItems();
             if(storedData.length > 0){
-                const ids = storedData.map(item => item.id);
-                const index = ids.indexOf(itemId);
+                const index = getIndex(storedData, itemId);
                 storedData.splice(index,1);
                 localStorage.setItem('itemList', JSON.stringify(storedData));
             }
@@ -28,8 +32,7 @@ const StorageCtrl = (function(){
         updateLocalStorage: function(updatedItem){
             const storedData = this.getItems();
             if(storedData.length > 0){
-                const ids = storedData.map(item => item.id);
-                const index = ids.indexOf(updatedItem.id);
+                const index = getIndex(storedData, updatedItem.id);
                 storedData[index] = updatedItem;
                 localStorage.setItem('itemList', JSON.stringify(storedData));
             }
@@ -297,7 +300,7 @@ const App = (function(ItemCtrl, UICtrl, StorageCtrl){
     const itemDeleteSubmit = function(e){
         const currentItem = ItemCtrl.getCurrentItem();
 
-        StorageCtrl.removeItem(currentItem.id);
+        StorageCtrl.deleteFromLocalStorage(currentItem.id);
         ItemCtrl.deleteItem(currentItem.id);  
         UICtrl.deleteListItem(currentItem.id);
         UICtrl.showTotalCalories(ItemCtrl.getTotalCalories());

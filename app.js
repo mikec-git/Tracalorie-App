@@ -198,7 +198,7 @@ const App = (function(ItemCtrl, UICtrl){
         // Get form input from UI Controller
         const {itemNameInput: itemName, itemCaloriesInput: itemCalories} = UICtrl.getItemInput();
         
-        if(itemName !== '' && itemCalories !== ''){
+        if(itemName !== '' && itemCalories !== '' && parseInt(itemCalories) >= 0){
             const newItem = ItemCtrl.addItem(itemName, itemCalories);
             // Add item to UI List
             UICtrl.addListItem(newItem);
@@ -229,6 +229,8 @@ const App = (function(ItemCtrl, UICtrl){
 
         const updatedItem = ItemCtrl.updateItem(updateName, parseInt(updateCalories));
         UICtrl.updateListItem(updatedItem);
+        const totalCalories = ItemCtrl.getTotalCalories();
+        UICtrl.showTotalCalories(totalCalories);
         UICtrl.clearEditState();
         
         e.preventDefault();
